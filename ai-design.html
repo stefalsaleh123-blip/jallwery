@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Design Studio | Luxe Jewels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-white: #ffffff;
+            --gold: #d4af37;
+            --gold-light: #f4e4bc;
+            --beige: #f5f0e8;
+            --blush: #e8d5d5;
+            --text-dark: #2c2c2c;
+            --text-light: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--beige);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-icons a {
+            color: var(--primary-black);
+            font-size: 1.2rem;
+            margin-left: 1.5rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-icons a:hover {
+            color: var(--gold);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--primary-black);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .design-studio {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .design-form {
+            background: var(--primary-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--primary-black);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: var(--primary-white);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gold);
+            color: var(--primary-white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #c9a227;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result-panel {
+            background: var(--primary-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .result-placeholder {
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .result-placeholder i {
+            font-size: 4rem;
+            color: var(--gold-light);
+            margin-bottom: 1rem;
+        }
+
+        .result-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: var(--gold);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            margin-top: 1rem;
+            color: var(--text-dark);
+        }
+
+        .design-actions {
+            margin-top: 1.5rem;
+            display: none;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .design-actions .btn {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: var(--primary-black);
+        }
+
+        .btn-secondary:hover {
+            background: #333;
+        }
+
+        .recent-designs {
+            margin-top: 3rem;
+        }
+
+        .recent-designs h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-black);
+            margin-bottom: 1.5rem;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .design-card {
+            background: var(--primary-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .design-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .design-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .design-card-info {
+            padding: 1rem;
+        }
+
+        .design-card-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .design-studio {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">LUXE<span>.</span></a>
+        <div class="nav-icons">
+            <a href="index.html"><i class="fas fa-home"></i></a>
+            <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-magic"></i> AI Design Studio</h1>
+            <p>Let artificial intelligence bring your dream jewelry to life</p>
+        </div>
+
+        <div class="design-studio">
+            <div class="design-form">
+                <form id="ai-design-form">
+                    <div class="form-section">
+                        <h3>Jewelry Type</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Type *</label>
+                                <select id="type" required>
+                                    <option value="Ring">Ring</option>
+                                    <option value="Necklace">Necklace</option>
+                                    <option value="Bracelet">Bracelet</option>
+                                    <option value="Earrings">Earrings</option>
+                                    <option value="Pendant">Pendant</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Shape</label>
+                                <select id="shape">
+                                    <option value="Round">Round</option>
+                                    <option value="Oval">Oval</option>
+                                    <option value="Heart">Heart</option>
+                                    <option value="Square">Square</option>
+                                    <option value="Teardrop">Teardrop</option>
+                                    <option value="Rectangular">Rectangular</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Material</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Material *</label>
+                                <select id="material" required>
+                                    <option value="Gold">Gold</option>
+                                    <option value="Silver">Silver</option>
+                                    <option value="Platinum">Platinum</option>
+                                    <option value="Rose Gold">Rose Gold</option>
+                                    <option value="White Gold">White Gold</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Karat</label>
+                                <select id="karat">
+                                    <option value="24k">24K (Pure)</option>
+                                    <option value="22k">22K</option>
+                                    <option value="21k">21K</option>
+                                    <option value="18k" selected>18K</option>
+                                    <option value="14k">14K</option>
+                                    <option value="925">925 (Silver)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Color</h3>
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <select id="color">
+                                <option value="Yellow">Yellow Gold</option>
+                                <option value="White">White Gold</option>
+                                <option value="Rose">Rose Gold</option>
+                                <option value="Silver">Silver</option>
+                                <option value="Black">Black</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Gemstone</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Gemstone Type</label>
+                                <select id="gemstone_type">
+                                    <option value="None">No Gemstone</option>
+                                    <option value="Diamond">Diamond</option>
+                                    <option value="Ruby">Ruby</option>
+                                    <option value="Emerald">Emerald</option>
+                                    <option value="Sapphire">Sapphire</option>
+                                    <option value="Pearl">Pearl</option>
+                                    <option value="Amethyst">Amethyst</option>
+                                    <option value="Topaz">Topaz</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Gemstone Color</label>
+                                <select id="gemstone_color">
+                                    <option value="Clear">Clear/White</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Green">Green</option>
+                                    <option value="Pink">Pink</option>
+                                    <option value="Purple">Purple</option>
+                                    <option value="Yellow">Yellow</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" id="generate-btn">
+                        <i class="fas fa-wand-magic-sparkles"></i> Generate Design
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-panel">
+                <div class="result-placeholder" id="placeholder">
+                    <i class="fas fa-gem"></i>
+                    <h3>Your Design Will Appear Here</h3>
+                    <p>Fill in the form and click generate</p>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Creating your unique design...</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">This may take a few moments</p>
+                </div>
+
+                <img id="result-image" class="result-image" src="" alt="Generated Design">
+                
+                <div class="design-actions" id="design-actions">
+                    <button class="btn" onclick="downloadDesign()">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn btn-secondary" onclick="requestCustom()">
+                        <i class="fas fa-envelope"></i> Request Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-designs" id="recent-section" style="display: none;">
+            <h2>Your Recent Designs</h2>
+            <div class="designs-grid" id="recent-designs"></div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        let currentDesign = null;
+
+        document.getElementById('ai-design-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!isLoggedIn()) {
+                alert('Please login to generate designs');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const designData = {
+                type: document.getElementById('type').value,
+                color: document.getElementById('color').value,
+                shape: document.getElementById('shape').value,
+                material: document.getElementById('material').value,
+                karat: document.getElementById('karat').value,
+                gemstone_type: document.getElementById('gemstone_type').value,
+                gemstone_color: document.getElementById('gemstone_color').value
+            };
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result-image').style.display = 'none';
+            document.getElementById('design-actions').style.display = 'none';
+            document.getElementById('generate-btn').disabled = true;
+
+            try {
+                const result = await generateAIDesign(designData);
+                
+                if (result && result.generated_image_url) {
+                    currentDesign = result;
+                    document.getElementById('result-image').src = BASE_URL + '/' + result.generated_image_url;
+                    document.getElementById('result-image').style.display = 'block';
+                    document.getElementById('design-actions').style.display = 'flex';
+                    showNotification('Design generated successfully!', 'success');
+                    loadRecentDesigns();
+                } else {
+                    throw new Error('Failed to generate design');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Failed to generate design. Please try again.', 'error');
+                document.getElementById('placeholder').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('generate-btn').disabled = false;
+            }
+        });
+
+        async function loadRecentDesigns() {
+            try {
+                const designs = await getUserDesigns();
+                if (designs && designs.length > 0) {
+                    document.getElementById('recent-section').style.display = 'block';
+                    const grid = document.getElementById('recent-designs');
+                    grid.innerHTML = designs.slice(0, 6).map(d => `
+                        <div class="design-card">
+                            <img src="${BASE_URL}/${d.generated_image_url}" alt="Design">
+                            <div class="design-card-info">
+                                <p>${d.selected_options.type || 'Jewelry'}</p>
+                                <p>${d.selected_options.material || ''} ${d.selected_options.karat || ''}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                console.error('Error loading recent designs:', e);
+            }
+        }
+
+        function downloadDesign() {
+            if (currentDesign) {
+                const link = document.createElement('a');
+                link.href = BASE_URL + '/' + currentDesign.generated_image_url;
+                link.download = 'jewelry-design.png';
+                link.click();
+            }
+        }
+
+        function requestCustom() {
+            if (currentDesign) {
+                alert('Feature coming soon! You will be able to request a custom quote from jewelers.');
+            }
+        }
+
+        if (isLoggedIn()) {
+            loadRecentDesigns();
+        }
+    </script>
+</body>
+</html>

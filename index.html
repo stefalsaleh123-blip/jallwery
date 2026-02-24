@@ -605,7 +605,7 @@
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#shop">Shop</a></li>
-            <li><a href="#custom">Custom Design</a></li>
+            <li><a href="ai-design.html">AI Design</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -796,8 +796,8 @@
         </div>
     </section>
 
-       <section class <!-- Contact Section -->
-="contact" id="contact">
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
         <div class="section-header">
             <h2>Get In Touch</h2>
             <div class="divider"></div>
@@ -867,49 +867,116 @@
         </div>
     </footer>
 
+    <script src="api.js"></script>
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        const BASE_URL = "http://localhost:8000";
+        
+        async function loadProductsFromAPI() {
+            try {
+                const response = await fetch(`${BASE_URL}/api/products/`);
+                const products = await response.json();
+                
+                const productGrid = document.querySelector('.product-grid');
+                if (productGrid && products.length > 0) {
+                    productGrid.innerHTML = products.map(product => `
+                        <div class="product-card" onclick="viewProduct(${product.id})">
+                            <div class="product-image">
+                                <img src="${product.image_path ? BASE_URL + '/' + product.image_path : 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80'}" alt="${product.name}">
+                                <div class="product-overlay">
+                                    <a href="#" onclick="event.stopPropagation(); addToCartHandler(${product.id})"><i class="fas fa-shopping-cart"></i></a>
+                                    <a href="#" onclick="event.stopPropagation();"><i class="fas fa-heart"></i></a>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <p>${product.material || ''} ${product.karat || ''}</p>
+                                <span class="product-price">$${product.price.toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.log('Using static products (API not available)');
+            }
+        }
+
+        async function addToCartHandler(productId) {
+            if (!isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            await addToCart(productId, 1);
+            showNotification('Added to cart!', 'success');
+        }
+
+        function viewProduct(productId) {
+            console.log('View product:', productId);
+        }
+
+        function updateNavigation() {
+            const user = getCurrentUser();
+            const navIcons = document.querySelector('.nav-icons');
+            if (navIcons) {
+                if (user) {
+                    navIcons.innerHTML = `
+                        <a href="ai-design.html" title="AI Design"><i class="fas fa-magic"></i></a>
+                        <a href="cart.html" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+                        <a href="#" onclick="logout(); return false;" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+                    `;
+                } else {
+                    navIcons.innerHTML = `
+                        <a href="login.html" title="Login"><i class="fas fa-sign-in-alt"></i></a>
+                        <a href="ai-design.html" title="AI Design"><i class="fas fa-magic"></i></a>
+                        <a href="cart.html" title="Cart"><i class="fas fa-shopping-bag"></i></a>
+                    `;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductsFromAPI();
+            updateNavigation();
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                    navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                } else {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                    navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
                 }
             });
-        });
 
-        // Navbar background on scroll
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-            } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
-            }
-        });
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
 
-        // Mobile menu toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-
-        menuToggle.addEventListener('click', function() {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '100%';
-                navLinks.style.left = '0';
-                navLinks.style.width = '100%';
-                navLinks.style.background = 'white';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.padding = '2rem';
-                navLinks.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
-            }
+            menuToggle.addEventListener('click', function() {
+                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+                if (navLinks.style.display === 'flex') {
+                    navLinks.style.position = 'absolute';
+                    navLinks.style.top = '100%';
+                    navLinks.style.left = '0';
+                    navLinks.style.width = '100%';
+                    navLinks.style.background = 'white';
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.padding = '2rem';
+                    navLinks.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
+                }
+            });
         });
     </script>
 </body>

@@ -122,44 +122,49 @@ POST /api/ai/generate-design
 }
 ```
 
-## كيفية التشغيل
+---
 
-### 1. إعداد قاعدة البيانات
+# تحديث: ربط الواجهة الأمامية مع الخلفية (Integration)
+
+## الملفات المُنشأة
+1. **api.js** - ملف الإعدادات للاتصال بالـ API
+2. **login.html** - صفحة تسجيل الدخول والتسجيل
+3. **ai-design.html** - صفحة توليد التصاميم بالذكاء الاصطناعي
+4. **setup.bat** - ملف إعداد المشروع
+5. **start.bat** - ملف تشغيل المشروع
+6. **stop.bat** - ملف إيقاف الخدمات
+
+## كيفية تشغيل المشروع
+
+### الطريقة السريعة (مُوصى بها):
+```
+1. انقر مرتين على setup.bat (للإعداد الأول)
+2. انقر مرتين على start.bat (للتشغيل)
+3. انقر مرتين على stop.bat (للإيقاف)
+```
+
+### خطوات الإعداد اليدوي:
 1. تشغيل XAMPP وتفعيل MySQL
-2. إنشاء قاعدة بيانات باسم `jewelry_db`
+2. إنشاء قاعدة بيانات `jewelry_db`
+3. تثبيت Python 3.11+
+4. تثبيت المتطلبات: `pip install -r requirements.txt`
+5. تشغيل Seeder: `python seeder.py`
+6. تشغيل السيرفر: `uvicorn main:app --reload`
 
-### 2. تثبيت المتطلبات
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-### 3. إعداد ملف .env
-```env
-DATABASE_URL=mysql+pymysql://root:@localhost:3306/jewelry_db
-GEMINI_API_KEY=your_api_key_here
-```
-
-### 4. تهيئة البيانات التجريبية
-```bash
-python seeder.py
-```
-
-### 5. تشغيل الخادم
-```bash
-uvicorn main:app --reload --port 8000
-```
-
-## البيانات التجريبية
-- 3 صائغين
-- 5 مستخدمين
-- 3 فئات رئيسية مع فئات فرعية
-- 2 طرق دفع
-- 10 منتجات
-
-**بيانات الدخول التجريبية:**
+## بيانات الدخول التجريبية
 - Username: `john_doe` | Password: `password123`
+- Username: `jane_smith` | Password: `password123`
 
-## التوثيق
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+## روابط الوصول
+- **الواجهة الأمامية**: http://localhost:8080
+- **API**: http://localhost:8000
+- **Swagger Docs**: http://localhost:8000/docs
+- **AI Design**: http://localhost:8080/ai-design.html
+
+## الميزات المُتكاملة
+- ✅ تسجيل الدخول والتسجيل مع JWT
+- ✅ عرض المنتجات من قاعدة البيانات
+- ✅ إضافة للسلة مع حفظ الجلسة
+- ✅ توليد تصاميم بالذكاء الاصطناعي
+- ✅ إدارة المستخدمين والجلسات
+- ✅ CORS مُفعل للتواصل بين Frontend و Backend
