@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Test outputs
+test_output.txt
+pip_list.txt
+pip_list2.txt
+py_test.txt
+
+# OS
+.DS_Store
+Thumbs.db
